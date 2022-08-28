@@ -27,6 +27,24 @@ class Player(arcade.Sprite):
 
         self.score = 0
 
+    def on_update(self):
+        self.move()
+
+    def move(self):
+        self.position_history.append(self.position)
+        if len(self.position_history) > self.score:
+            self.position_history.pop(0)
+
+        self.position = self.position_history[-1]
+        print(f'Player position: {self.position}')
+
+    def eat(apple: 'Apple'):
+        '''Eat the apple and increase the score'''
+        self.score += 1
+
+        apple.remove_from_sprite_lists()
+
+
 
 class Apple(arcade.Sprite):
     def __init__(self, position: tuple[int, int], scale: float = 1.0):
@@ -39,12 +57,19 @@ class Game(arcade.Window):
     def __init__(self):
         """initialize variables"""
 
-        super().__init__(title="Snake Remastered", fullscreen=True, update_rate=1/FPS)
+        print('Starting game...')
+
+        super().__init__(
+            title="Snake Remastered",
+            fullscreen=True,
+            # resizable=True,
+            update_rate=1/FPS)
+
         arcade.set_background_color(arcade.color.BLACK)
 
-        self.scene = None
+        self.scene: arcade.Scene = None
 
-        self.player = None
+        self.player: Player = None
 
         self.physics_engine = None
 
@@ -62,7 +87,6 @@ class Game(arcade.Window):
 
         self.physics_engine = arcade.PhysicsEngineSimple(self.player, self.scene['apple'])
 
-
     def on_draw(self):
         '''Display the scene'''
 
@@ -73,9 +97,12 @@ class Game(arcade.Window):
     def spawn_apple(self):
         '''Spawn an apple in a random place'''
 
-        pos = randint(0, self.width), randint(0, self.height)
+        max_x, max_y = self.grid_size
 
-        apple = Apple(pos)
+        grid_pos = randint(0, max_x), randint(0, max_y)
+        cord_pos = grid_pos[0] * 32, grid_pos[1] * 32
+
+        apple = Apple(cord_pos)
 
         self.scene.add_sprite('apple', apple)
 
@@ -84,17 +111,17 @@ class Game(arcade.Window):
 
         self.physics_engine.update()
 
-        self.player.velocity = 40, 0
+    @property
+    def grid_size(self):
+        '''Return the grid size'''
+
+        return self.width // 32, self.height // 32
 
 
 def main():
-    '''Run the game'''
+    '''Create and run the game'''
 
     game = Game()
 
     arcade.run()
-
-
-if __name__ == '__main__':
-    main()
 
