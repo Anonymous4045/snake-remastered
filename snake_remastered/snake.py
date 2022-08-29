@@ -90,16 +90,12 @@ class GameWindow(arcade.Window):
         if any(move.values()):
             if move["up"] and self.player.can_move("up"):
                 self.player.velocity = 0, PLAYER_SPEED
-                self.player.last_direction = "up"
             if move["down"] and self.player.can_move("down"):
                 self.player.velocity = 0, -PLAYER_SPEED
-                self.player.last_direction = "down"
             if move["left"] and self.player.can_move("left"):
                 self.player.velocity = -PLAYER_SPEED, 0
-                self.player.last_direction = "left"
             if move["right"] and self.player.can_move("right"):
                 self.player.velocity = PLAYER_SPEED, 0
-                self.player.last_direction = "right"
 
     def spawn_apple(self):
         """Spawn an apple in a random place"""
@@ -112,9 +108,8 @@ class GameWindow(arcade.Window):
         apple = Apple((10000, 10000))
         apple.position = cord_pos
 
-        if (not self.is_in_bounds(apple)) or cord_pos in self.player.position_history:
+        if not self.is_in_bounds(apple) or cord_pos in self.player.position_history:
             return self.spawn_apple()
-        print(cord_pos, self.player.position_history)
 
         self.scene.add_sprite("apple", apple)
 
@@ -139,7 +134,7 @@ class GameWindow(arcade.Window):
             pass
 
     def is_in_bounds(self, sprite):
-        """Check if the player hits a wall"""
+        """Check if the sprite is in view"""
 
         if any(
             [
