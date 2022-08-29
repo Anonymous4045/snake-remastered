@@ -28,13 +28,20 @@ class Player(arcade.Sprite):
             self.position_history.pop(0)
 
     def can_move(self, direction: str):
-        '''Check if the player can move in the givin direction'''
+        """Check if the player can move in the givin direction"""
 
-        if any([
-            direction == 'up' and self.position[1] + 32 in [x[1] for x in self.position_history],
-            direction == 'down' and self.position[1] - 32 in [x[1] for x in self.position_history],
-            direction == 'left' and self.position[0] - 32 in [x[0] for x in self.position_history],
-            direction == 'right' and self.position[0] + 32 in [x[0] for x in self.position_history]]):
+        if any(
+            [
+                direction == "up"
+                and self.position[1] + 32 in [x[1] for x in self.position_history],
+                direction == "down"
+                and self.position[1] - 32 in [x[1] for x in self.position_history],
+                direction == "left"
+                and self.position[0] - 32 in [x[0] for x in self.position_history],
+                direction == "right"
+                and self.position[0] + 32 in [x[0] for x in self.position_history],
+            ]
+        ):
             return False
 
         return True
@@ -51,4 +58,3 @@ class SnakeBody(arcade.Sprite):
         super().__init__(ASSETS_PATH / "snake_body.png", scale=scale)
 
         self.position = x, y
-

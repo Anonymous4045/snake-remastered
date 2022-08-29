@@ -42,7 +42,6 @@ class GameWindow(arcade.Window):
 
         self.scene = arcade.Scene()
 
-
         player_x = self.grid_size[0] // 2 * 32
         player_y = self.grid_size[1] // 2 * 32
         self.player = Player(player_x, player_y)
@@ -71,7 +70,7 @@ class GameWindow(arcade.Window):
             self.setup()
 
         try:
-            self.scene.remove_sprite_list_by_name('snake_body')
+            self.scene.remove_sprite_list_by_name("snake_body")
         except KeyError:
             pass
         for x, y in self.player.position_history[:-1]:
@@ -79,28 +78,28 @@ class GameWindow(arcade.Window):
             self.scene.add_sprite("snake_body", body)
 
     def on_key_press(self, key, modifier):
-        '''Handle keyboard input'''
+        """Handle keyboard input"""
 
         move = {
-            'up': key in (k.UP, k.W),
-            'down': key in (k.DOWN, k.S),
-            'left': key in (k.LEFT, k.A),
-            'right': key in (k.RIGHT, k.D),
+            "up": key in (k.UP, k.W),
+            "down": key in (k.DOWN, k.S),
+            "left": key in (k.LEFT, k.A),
+            "right": key in (k.RIGHT, k.D),
         }
 
         if any(move.values()):
-            if move['up'] and self.player.can_move('up'):
+            if move["up"] and self.player.can_move("up"):
                 self.player.velocity = 0, PLAYER_SPEED
-                self.player.last_direction = 'up'
-            if move['down'] and self.player.can_move('down'):
+                self.player.last_direction = "up"
+            if move["down"] and self.player.can_move("down"):
                 self.player.velocity = 0, -PLAYER_SPEED
-                self.player.last_direction = 'down'
-            if move['left'] and self.player.can_move('left'):
+                self.player.last_direction = "down"
+            if move["left"] and self.player.can_move("left"):
                 self.player.velocity = -PLAYER_SPEED, 0
-                self.player.last_direction = 'left'
-            if move['right'] and self.player.can_move('right'):
+                self.player.last_direction = "left"
+            if move["right"] and self.player.can_move("right"):
                 self.player.velocity = PLAYER_SPEED, 0
-                self.player.last_direction = 'right'
+                self.player.last_direction = "right"
 
     def spawn_apple(self):
         """Spawn an apple in a random place"""
@@ -120,30 +119,37 @@ class GameWindow(arcade.Window):
         self.scene.add_sprite("apple", apple)
 
     def check_collisions(self):
-        '''Check for collisions'''
+        """Check for collisions"""
 
-        player_hitting_apple = arcade.check_for_collision_with_list(self.player, self.scene["apple"])
+        player_hitting_apple = arcade.check_for_collision_with_list(
+            self.player, self.scene["apple"]
+        )
         if player_hitting_apple:
             apple = player_hitting_apple[0]
             self.player.eat(apple)
             self.spawn_apple()
 
         try:
-            player_hit_self = arcade.check_for_collision_with_list(self.player, self.scene['snake_body'])
+            player_hit_self = arcade.check_for_collision_with_list(
+                self.player, self.scene["snake_body"]
+            )
             if player_hit_self:
                 self.setup()
         except KeyError:
             pass
 
     def is_in_bounds(self, sprite):
-        '''Check if the player hits a wall'''
+        """Check if the player hits a wall"""
 
-        if any([
-            sprite.left < 0,
-            sprite.bottom < 0,
-            sprite.right > self.width,
-            sprite.top > self.height]):
-                return False
+        if any(
+            [
+                sprite.left < 0,
+                sprite.bottom < 0,
+                sprite.right > self.width,
+                sprite.top > self.height,
+            ]
+        ):
+            return False
 
         return True
 
